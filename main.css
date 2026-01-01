@@ -237,16 +237,17 @@ main {
 
 .footer {
     text-align: center;
-    padding: 40px;
+    padding: 30px;
     color: #ffffff;
-    font-size: 18px;
+    font-size: 13px;
     cursor: pointer;
 }
 
 .footer1{
     text-align: center;
     color: #ffffff;
-    font-size: 18px;
+    padding-bottom: 30px;
+    font-size: 13px;
     cursor: pointer;
 }
 
