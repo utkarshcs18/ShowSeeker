@@ -24,7 +24,7 @@ function displayRecommendations(movies){
 
     movies.forEach(item => {
         if (item.poster_path) {
-            const card = createMovieCard(item); // CHANGED TO USE createMovieCard
+            const card = createMovieCard(item); 
             grid.appendChild(card);
         }
     });
@@ -52,7 +52,7 @@ function displaySearchResults(movies, query){
             }
         });
     } else {
-        resultsGrid.innerHTML = "<p style='color: #fff; text-align: center;'>No results found. Try a different search term.</p>";
+        resultsGrid.innerHTML = "<p style='color: #fff; text-align: center;'>No results found. Try a different search.</p>";
     }
 }
 
@@ -101,7 +101,10 @@ function openModal(movie) {
     modal.style.display = 'block';
     
     displayMovieDetails(movie);
-    fetchOTTPlatforms(movie.title || movie.name, movie.media_type);
+    
+    const mediaType = movie.media_type || (movie.first_air_date ? 'tv' : 'movie');
+    const movieTitle = movie.title || movie.name;
+    fetchOTTPlatforms(movie.id, mediaType, movieTitle);
 }
 
 function displayMovieDetails(movie) {
@@ -115,75 +118,141 @@ function displayMovieDetails(movie) {
     
     const descriptionDiv = document.querySelector('.modal .description-div');
     if (descriptionDiv) {
-        descriptionDiv.innerHTML = `<strong>Description:</strong> ${movie.overview || 'No description available'}`;
+        descriptionDiv.innerHTML = `
+            <strong>Synopsis</strong>
+            <p>${movie.overview || 'No description available'}</p>
+        `;
     }
     
     const ratingDiv = document.querySelector('.modal .rating-div');
     if (ratingDiv) {
-        ratingDiv.innerHTML = `<strong>Rating:</strong> ${movie.vote_average ? movie.vote_average.toFixed(1) + '/10' : 'N/A'}`;
+        const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
+        ratingDiv.innerHTML = `
+            <strong>Rating</strong>
+            <div class="rating-score">${rating}<span style="font-size: 18px; color: #888;">/10</span></div>
+        `;
     }
 
     const ottDiv = document.querySelector('.modal .ott-div');
     if (ottDiv) {
-        ottDiv.innerHTML = '<strong>Available on:</strong> Loading...';
+        ottDiv.innerHTML = '<strong>Watch Now</strong><div class="platform-buttons"><span style="color: #888;">Loading platforms...</span></div>';
     }
 }
 
-async function fetchOTTPlatforms(title, mediaType) {
+
+async function fetchOTTPlatforms(movieId, mediaType, movieTitle) {
     try {
-        const searchUrl = `https://api.watchmode.com/v1/search/?apiKey=${watchmode_api}&search_field=name&search_value=${encodeURIComponent(title)}`;
-        const searchResponse = await fetch(searchUrl);
-        const searchData = await searchResponse.json();
+        const type = mediaType === 'tv' ? 'tv' : 'movie';
+        const url = `https://api.themoviedb.org/3/${type}/${movieId}/watch/providers?api_key=${base_api}`;
+        console.log("Fetching TMDB providers:", url);
         
-        console.log("Watchmode search results:", searchData);
+        const response = await fetch(url);
+        const data = await response.json();
         
-        if (searchData.title_results && searchData.title_results.length > 0) {
-            const firstResult = searchData.title_results[0];
-            const titleId = firstResult.id;
+        console.log("TMDB providers:", data);
+        
+        const ottDiv = document.querySelector('.modal .ott-div');
+        if (!ottDiv) return;
+        
+        if (data.results) {
+            const region = data.results.IN || data.results.US || Object.values(data.results)[0];
             
-            const detailsUrl = `https://api.watchmode.com/v1/title/${titleId}/details/?apiKey=${watchmode_api}`;
-            const detailsResponse = await fetch(detailsUrl);
-            const detailsData = await detailsResponse.json();
-            
-            console.log("Watchmode details:", detailsData);
-            
-            displayOTTPlatforms(detailsData.sources);
-        } else {
-            const ottDiv = document.querySelector('.modal .ott-div');
-            if (ottDiv) {
-                ottDiv.innerHTML = '<strong>Available on:</strong> Not found';
+            if (region) {
+                const flatrate = region.flatrate || [];
+                const buy = region.buy || [];
+                const rent = region.rent || [];
+                
+                if (flatrate.length > 0) {
+                    displayClickablePlatforms(flatrate, movieTitle, ottDiv);
+                } else if (buy.length > 0 || rent.length > 0) {
+                    const allPlatforms = [...buy, ...rent];
+                    displayClickablePlatforms(allPlatforms, movieTitle, ottDiv, '(rent/buy)');
+                } else {
+                    ottDiv.innerHTML = '<strong>Watch Now</strong> Not available for streaming';
+                }
+            } else {
+                ottDiv.innerHTML = '<strong>Watch Now</strong> Not available in your region / Not available for streaming';
             }
+        } else {
+            ottDiv.innerHTML = '<strong>Watch Now</strong> No info available';
         }
-        
     } catch(error) {
-        console.error('Error fetching OTT platforms:', error);
+        console.error('Error fetching OTT:', error);
         const ottDiv = document.querySelector('.modal .ott-div');
         if (ottDiv) {
-            ottDiv.innerHTML = '<strong>Available on:</strong> Information unavailable';
+            ottDiv.innerHTML = '<strong>Available on:</strong> Error loading';
         }
     }
 }
 
-function displayOTTPlatforms(sources) {
-    const ottDiv = document.querySelector('.modal .ott-div');
+function displayClickablePlatforms(platforms, movieTitle, ottDiv, suffix = '') {
+    const uniquePlatforms = [...new Map(platforms.map(p => [p.provider_id, p])).values()].slice(0, 5);
     
-    if (!ottDiv) return;
+    const platformIcons = {
+        'Netflix': '🎬',
+        'Amazon Prime Video': '📺',
+        'Disney Plus': '✨',
+        'Disney+ Hotstar': '⭐',
+        'Hotstar': '⭐',
+        'Apple TV Plus': '🍎',
+        'Apple TV': '🍎',
+        'Hulu': '🎭',
+        'HBO Max': '🎪',
+        'Max': '🎪',
+        'YouTube': '▶️',
+        'SonyLIV': '📡',
+        'Zee5': '🎬',
+        'default': '🎯'
+    };
     
-    if (sources && sources.length > 0) {
-        const streamingSources = sources.filter(source => 
-            source.type === 'sub' || source.format === 'streaming'
-        );
+    const getSearchUrl = (providerName, title) => {
+        const encodedTitle = encodeURIComponent(title);
         
-        if (streamingSources.length > 0) {
-            const platforms = [...new Set(streamingSources.map(s => s.name))];
-            ottDiv.innerHTML = `<strong>Available on:</strong> ${platforms.slice(0, 5).join(', ')}`;
-        } else {
-            ottDiv.innerHTML = '<strong>Available on:</strong> Available for purchase/rent only';
-        }
-    } else {
-        ottDiv.innerHTML = '<strong>Available on:</strong> Not available for streaming';
-    }
+        const searchUrls = {
+            'Netflix': `https://www.netflix.com/search?q=${encodedTitle}`,
+            'Amazon Prime Video': `https://www.primevideo.com/search/ref=atv_nb_sug?phrase=${encodedTitle}`,
+            'Disney Plus': `https://www.disneyplus.com/search?q=${encodedTitle}`,
+            'Hotstar': `https://www.hotstar.com/in/search?q=${encodedTitle}`,
+            'Disney+ Hotstar': `https://www.hotstar.com/in/search?q=${encodedTitle}`,
+            'Apple TV Plus': `https://tv.apple.com/search?q=${encodedTitle}`,
+            'Apple TV': `https://tv.apple.com/search?q=${encodedTitle}`,
+            'Hulu': `https://www.hulu.com/search?q=${encodedTitle}`,
+            'HBO Max': `https://www.max.com/search?q=${encodedTitle}`,
+            'Max': `https://www.max.com/search?q=${encodedTitle}`,
+            'Paramount Plus': `https://www.paramountplus.com/search/?query=${encodedTitle}`,
+            'Paramount+': `https://www.paramountplus.com/search/?query=${encodedTitle}`,
+            'Peacock': `https://www.peacocktv.com/search/${encodedTitle}`,
+            'YouTube': `https://www.youtube.com/results?search_query=${encodedTitle}`,
+            'Google Play Movies': `https://play.google.com/store/search?q=${encodedTitle}&c=movies`,
+            'SonyLIV': `https://www.sonyliv.com/search?q=${encodedTitle}`,
+            'Zee5': `https://www.zee5.com/search?q=${encodedTitle}`,
+            'Voot': `https://www.voot.com/search?q=${encodedTitle}`,
+            'JioCinema': `https://www.jiocinema.com/search?q=${encodedTitle}`,
+            'MX Player': `https://www.mxplayer.in/search?q=${encodedTitle}`
+        };
+        
+        return searchUrls[providerName] || `https://www.google.com/search?q=${encodedTitle}+watch+online`;
+    };
+    
+    const platformHTML = uniquePlatforms.map(platform => {
+        const url = getSearchUrl(platform.provider_name, movieTitle);
+        const icon = platformIcons[platform.provider_name] || platformIcons['default'];
+        
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="platform-btn">
+                   <span>${icon}</span>
+                   <span>${platform.provider_name}</span>
+                </a>`;
+    }).join('');
+    
+    ottDiv.innerHTML = `
+        <strong>Watch Now</strong>
+        <div class="platform-buttons">
+            ${platformHTML}
+        </div>
+        ${suffix ? '<span style="font-size: 13px; color: #666; display: block; margin-top: 12px;">' + suffix + '</span>' : ''}
+    `;
 }
+
 
 function setupSearch() {
     const searchbtn = document.querySelector(".search-btn");

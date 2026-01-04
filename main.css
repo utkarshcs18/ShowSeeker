@@ -245,10 +245,8 @@ main {
 
 .content-card:hover {
     background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
-
 
 .about {
     display: flex;
@@ -310,42 +308,8 @@ main {
     color: inherit !important;
 }
 
-.background-div {
-    background: linear-gradient(135deg, rgba(80, 80, 80, 0.9) 0%, rgba(60, 70, 60, 0.9) 100%);
-    border-radius: 30px;
-    padding: 40px;
-    max-width: 1700px;
-    width: 90%;
-    margin-left: 70px;
-    margin-right: 70px;
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    grid-template-rows: auto auto auto;
-    gap: 30px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-}
-
-.image-div {
-    grid-row: 1 / 4;
-    width: 280px;
-    height: 400px;
-    background: linear-gradient(135deg, #7b68a8 0%, #5d4b8a 100%);
-    border-radius: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.description-div,
-.rating-div,
-.ott-div {
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-size: 20px;
+.modal .background-div {
+    margin-top: 0;
 }
 
 .modal {
@@ -356,34 +320,169 @@ main {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
     overflow-y: auto;
+    animation: fadeIn 0.3s ease;
 }
 
 .modal-content {
     position: relative;
-    margin: 50px auto;
-    padding: 20px;
+    margin: 30px auto;
+    padding: 0;
     max-width: 1200px;
-    animation: slideDown 0.3s ease;
+    animation: slideUp 0.4s ease;
 }
 
-@keyframes slideDown {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+.modal .background-div {
+    background: linear-gradient(135deg, rgba(40, 40, 40, 0.95) 0%, rgba(30, 40, 35, 0.95) 100%);
+    border-radius: 20px;
+    padding: 0;
+    margin: 0 20px;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 0;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    position: relative;
 }
+
+.modal .image-div {
+    grid-row: 1 / 4;
+    width: 350px;
+    height: 100%;
+    min-height: 500px;
+    background: linear-gradient(135deg, #7b68a8 0%, #5d4b8a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal .image-div::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 100%);
+    z-index: 1;
+}
+
+.modal .description-div,
+.modal .rating-div,
+.modal .ott-div {
+    padding: 30px 40px;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal .ott-div {
+    border-bottom: none;
+    padding-bottom: 40px;
+}
+
+
+.modal .description-div {
+    padding-top: 40px;
+}
+
+.modal .description-div strong {
+    display: block;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #888;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.modal .description-div p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #e0e0e0;
+    margin: 0;
+}
+
+.modal .rating-div {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.modal .rating-div strong {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #888;
+    font-weight: 600;
+}
+
+.modal .rating-score {
+    font-size: 36px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+.modal .ott-div strong {
+    display: block;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #888;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.modal .platform-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.modal .platform-btn {
+    color: #fff;
+    text-decoration: none;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(56, 142, 60, 0.2));
+    padding: 12px 24px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid rgba(76, 175, 80, 0.4);
+    transition: all 0.3s ease;
+    font-size: 15px;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal .platform-btn::after {
+    content: '→';
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.modal .platform-btn:hover::after {
+    transform: translateX(5px);
+}
+
 
 .close-btn {
     position: absolute;
     right: 30px;
-    top: 10px;
+    top: 3px;
     font-size: 40px;
     font-weight: bold;
     color: #fff;
@@ -395,8 +494,3 @@ main {
 .close-btn:hover {
     color: #ff4444;
 }
-
-.modal .background-div {
-    margin-top: 0;
-}
-
