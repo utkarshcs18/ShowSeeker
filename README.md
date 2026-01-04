@@ -22,16 +22,20 @@ Instead of searching across multiple OTT platforms, users can simply search once
 # Tech Stack
 
 Frontend: HTML, CSS, JavaScript
+
 Backend: API-based data fetching
+
 APIs: TMDB , WatchMode 
 
 ---
 
 # Credits & Disclaimer
 This project uses third-party APIs to retrieve movie, series, and OTT platform data.
+
 All information such as titles, descriptions, posters, and streaming availability belongs to their respective owners.
 
 ShowSeeker is a non-commercial project created for educational and learning purposes.
+
 It is not affiliated with or endorsed by any OTT platform or content provider.
 
 ---
