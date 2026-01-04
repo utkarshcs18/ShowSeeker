@@ -7,10 +7,15 @@ Instead of searching across multiple OTT platforms, users can simply search once
 # Features
 
 🔍 Search for movies and TV series
+
 📝 View basic descriptions and details
+
 📺 See which OTT platforms a movie or series is available on
+
 ⚡ Fast and simple user experience
+
 🌐 Powered by third-party APIs for accurate data
+
 
 ---
 
