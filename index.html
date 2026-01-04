@@ -5,61 +5,73 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>ShowSeeker</title>
             <link rel="stylesheet" href="main.css">
-            <script src="main.js" defer></script>
+            <script type="module" src="main.js" defer></script>
         </head>
 
         <body>
             <nav>
                 <div class="left-nav">
-                    ShowSeeker
+                    <a class="inter-link" href="index.html">ShowSeeker</a>
                 </div>
-                    <a class="credit-page" href="credit.html">
-                        <div class="right-nav">
-                        Credits
-                    </div>
-                </a>
+
+                <div class="right-nav">
+                    <a class="inter-link" href="credit.html">Credits</a>
+                </div>
             </nav>
             
-                <main>
-                    <section class="hero-section">
+            <main>
+                <section class="hero-section">
+                    <div class="hero-grid">
+                        <div class="catty">
+                            <img src="pet-catty.png" alt="sleepingCat" class="cat">
+                            <div class="z z-1">Z</div>
+                            <div class="z z-2">Z</div>
+                            <div class="z z-3">Z</div>
+                            <div class="z z-4">Z</div>
+                        </div>
+
                         <div class="search-container">
                             <input class="search" type="text" placeholder="Seek" required>
                             <button class="search-btn">Search</button>
                         </div>
+
+                    </div>
+                </section>
+
+                    <section class="search-results-section" style="display: none;">
+                        <h2 class="results-title"></h2>
+                        <div class="results-grid"></div>
                     </section>
+
                     <h2 class="section-title">Recommendations ;) </h2>
                     <section class="content-section">
                         <div class="content-grid">
-                            <div class="content-card">
-                                
-                            </div>
-                            
-                            <div class="content-card">
-                                
-                            </div>
-                            
-                            <div class="content-card">
-                                
-                            </div>
-
-                            <div class="content-card">
-                                
-                            </div>
-
-                            <div class="content-card">
-                                
-                            </div>
-
+                            <div class="content-card"></div>
+                            <div class="content-card"></div>
+                            <div class="content-card"></div>
+                            <div class="content-card"></div>
+                            <div class="content-card"></div>
                         </div> 
                     </section>
                 </main>
-            </body>
 
-            <div class="footer">
-                <p style="text-align: center; margin-bottom: 40px; color: #aaa; font-size: 14px;">
-                    <hr style="width: 500px; margin: 20px auto; border: 0; height: 1px; background-color: rgb(74, 103, 28);">
-                    All content copyright © <a class="portfolio" href="https://utkarshvoid.vercel.app/">Utkarsh</a> - 2025
-                </p>
+             <div class="modal" id="movieModal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <div class="background-div">
+                    <div class="image-div"></div>
+                    <div class="description-div">Loading...</div>
+                    <div class="rating-div">-</div>
+                    <div class="ott-div">Loading...</div>
+                </div>
             </div>
-    </html>
+        </div>
 
+        <div class="footer">
+            <p style="text-align: center; margin-bottom: 40px; color: #aaa; font-size: 14px;">
+                <hr style="width: 500px; margin: 20px auto; border: 0; height: 1px; background-color: rgb(74, 103, 28);">
+                All content copyright © <a class="portfolio" href="https://utkarshvoid.vercel.app/">Utkarsh</a> - 2025
+            </p>
+        </div>
+    </body>
+</html>
