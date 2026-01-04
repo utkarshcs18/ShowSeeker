@@ -15,6 +15,7 @@ body {
 }
 
 nav {
+    height: 64px;
     position: fixed;
     top: 0;
     left: 0;
@@ -39,6 +40,10 @@ nav {
 
 .left-nav:hover {
     opacity: 0.8;
+}
+
+.nav-logo{
+    height: 100px;
 }
 
 .right-nav {
