@@ -189,20 +189,20 @@ function displayClickablePlatforms(platforms, movieTitle, ottDiv, suffix = '') {
     const uniquePlatforms = [...new Map(platforms.map(p => [p.provider_id, p])).values()].slice(0, 5);
     
     const platformIcons = {
-        'Netflix': '🎬',
-        'Amazon Prime Video': '📺',
-        'Disney Plus': '✨',
-        'Disney+ Hotstar': '⭐',
-        'Hotstar': '⭐',
-        'Apple TV Plus': '🍎',
-        'Apple TV': '🍎',
-        'Hulu': '🎭',
-        'HBO Max': '🎪',
-        'Max': '🎪',
-        'YouTube': '▶️',
-        'SonyLIV': '📡',
-        'Zee5': '🎬',
-        'default': '🎯'
+        'Netflix': '',
+        'Amazon Prime Video': '',
+        'Disney Plus': '',
+        'Disney+ Hotstar': '',
+        'Hotstar': '',
+        'Apple TV Plus': '',
+        'Apple TV': '',
+        'Hulu': '',
+        'HBO Max': '',
+        'Max': '',
+        'YouTube': '',
+        'SonyLIV': '',
+        'Zee5': '',
+        'default': ''
     };
     
     const getSearchUrl = (providerName, title) => {
