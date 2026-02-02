@@ -1,4 +1,14 @@
-# ShowSeeker
+{
+  "agent_servers": {
+    "GitHub Copilot": {
+      "command": "npx",
+      "args": [
+        "@github/copilot-language-server@latest",
+        "--acp"
+      ]
+    }
+  }
+}# ShowSeeker
 `ShowSeeker` is a web application that helps users find where their favorite movies and TV series are streaming.
 Instead of searching across multiple OTT platforms, users can simply search once and get instant results with descriptions and available streaming services.
 
